@@ -14,16 +14,31 @@ namespace SplitWise.BusinessLogic.Services
     {
         public PaymentService(splitwiseContext _db) : base(_db) { }
 
-        public async Task<Payment> ApprovePaymant(int paymentId)
+        public async Task<Payment> ApprovePaymant(int paymentId, int toUserId)
         {
             var payment = await GetByKeysAsync(paymentId);
             if (payment == null)
                 throw new EntityNotFoundException("The Payment cannot be found.", paymentId);
 
+            if (payment.ToUserId != toUserId)
+                throw new ForbiddenException("Not Allow!");
+
             payment.Confirmed = true;
             await _db.SaveChangesAsync();
 
             return payment;
+        }
+
+        public async Task<bool> DeleteAsync(int paymentId, int toUserId)
+        {
+            var payment = await GetByKeysAsync(paymentId);
+            if (payment == null)
+                throw new EntityNotFoundException("The Payment cannot be found.", paymentId);
+
+            if (payment.ToUserId != toUserId)
+                throw new ForbiddenException("Not Allow!");
+
+            return await DeleteAsync(payment);
         }
     }
 }

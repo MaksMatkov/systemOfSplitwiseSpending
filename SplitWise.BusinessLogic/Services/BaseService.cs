@@ -22,12 +22,18 @@ namespace SplitWise.BusinessLogic.Services
         public async Task<bool> DeleteAsync(T item)
         {
             if (item == null)
-                throw new ArgumentNullException("Invalid data.");
+                throw new ArgumentNullException($"{typeof(T).Name} Not Found!");
 
             _db.Entry(item).State = EntityState.Deleted;
             await _db.SaveChangesAsync();
 
             return true;
+        }
+
+        public virtual async Task<bool> DeleteAsync(params object[] keyValues)
+        {
+            var entity = GetByKeysAsync(keyValues);
+            return await DeleteAsync(entity);
         }
 
         public async Task<IEnumerable<T>> GetAsync()
@@ -37,10 +43,13 @@ namespace SplitWise.BusinessLogic.Services
 
         public async Task<T> GetByKeysAsync(params object[] keyValues)
         {
-            return await _db.Set<T>().FindAsync(keyValues);
+            var result = await _db.Set<T>().FindAsync(keyValues);
+            if(result == null)
+                throw new EntityNotFoundException($"{typeof(T).Name} not found.", (int)keyValues[0]);
+            return result;
         }
 
-        public async Task<T> SaveAsync(T item)
+        public virtual async Task<T> SaveAsync(T item)
         {
             if (item == null)
                 throw new ArgumentNullException("Invalid data.");

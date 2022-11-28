@@ -15,7 +15,7 @@ namespace SplitWise.BusinessLogic.Services
     {
         public GroupService(splitwiseContext _db) : base(_db) { }
 
-        public async Task<bool> AddUserToGroup(int userID, int groupID)
+        public async Task<bool> AddFirstUserToGroup(int userID, int groupID)
         {
             var group = await GetByKeysAsync(groupID);
             if (group == null)
@@ -30,6 +30,14 @@ namespace SplitWise.BusinessLogic.Services
             await _db.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<bool> AddNewUserToGroup(int inviterUserId, int userID, int groupID)
+        {
+            if(!await IsMemberOfGroup(inviterUserId, groupID))
+                throw new ForbiddenException("Not Allow!");
+
+            return await AddFirstUserToGroup(userID, groupID);
         }
 
         public async Task<bool> IsMemberOfGroup(int userID, int groupID)

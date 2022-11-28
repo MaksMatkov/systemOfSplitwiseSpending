@@ -37,18 +37,12 @@ namespace SplitWise.API.Controllers
         {
             var user = await _userService.GetByKeysAsync(id);
 
-            if (user == null)
-                throw new EntityNotFoundException("User Not Found!", id);
-
             return _mapper.Map<User, UserResponse>(user);
         }
 
         [HttpPost]
         public async Task<UserResponse> Post(UserRequest _user)
         {
-            if (!await _userService.IsUnique(_user.name))
-                throw new ArgumentIsNotUniqueException("User name is not unique");
-
             var user = await _userService.SaveAsync(_mapper.Map<UserRequest, User>(_user));
 
             return _mapper.Map<User, UserResponse>(user);
@@ -57,11 +51,7 @@ namespace SplitWise.API.Controllers
         [HttpDelete("{id}")]
         public async Task<DataDeleteResponse> Delete(int id)
         {
-            var user = await _userService.GetByKeysAsync(id);
-            if(user == null)
-                throw new EntityNotFoundException("User Not Found!", id);
-
-            await _userService.DeleteAsync(user);
+            await _userService.DeleteAsync(id);
 
             return new DataDeleteResponse() { ok = true };
         } 
@@ -69,9 +59,6 @@ namespace SplitWise.API.Controllers
         [HttpPut()]
         public async Task<UserResponse> Put(UserRequest _user)
         {
-            if(_user.id == 0)
-                throw new EntityNotFoundException("User Not Found!", 0);
-
             var rsult = await _userService.UpdateAsync(_mapper.Map<UserRequest, User>(_user), new object[] { _user.id });
 
             return _mapper.Map<User, UserResponse>(rsult);

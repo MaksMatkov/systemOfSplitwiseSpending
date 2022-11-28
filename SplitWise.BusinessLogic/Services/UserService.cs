@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SplitWise.BusinessLogic.Abstraction;
+using SplitWise.BusinessLogic.CustomExceptions;
 using SplitWise.Domain.Enteties;
 using SplitWise.Infrastucture;
 using System;
@@ -28,5 +29,14 @@ namespace SplitWise.BusinessLogic.Services
 
             return user == null;
         }
+
+        public override async Task<User> SaveAsync(User item)
+        {
+            if(!await IsUnique(item.Name))
+                throw new ArgumentIsNotUniqueException("User name is not unique");
+
+            return await base.SaveAsync(item);
+        }
+
     }
 }

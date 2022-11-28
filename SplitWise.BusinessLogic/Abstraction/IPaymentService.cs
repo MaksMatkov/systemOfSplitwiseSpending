@@ -9,6 +9,7 @@ namespace SplitWise.BusinessLogic.Abstraction
 {
     public interface IPaymentService : IBaseServise<Payment>
     {
-        public Task<Payment> ApprovePaymant(int paymantId);
+        public Task<Payment> ApprovePaymant(int paymantId, int toUserId);
+        public Task<bool> DeleteAsync(int paymantId, int toUserId);
     }
 }

@@ -30,14 +30,7 @@ namespace SplitWise.API.Controllers
         [Authorize]
         public async Task<bool> Approve(int id)
         {
-            var payment = await _paymentService.GetByKeysAsync(id);
-            if (payment == null)
-                throw new EntityNotFoundException("Payment Not Found!", id);
-
-            if (payment.ToUserId != IdentityHelper.GetSub(User))
-                throw new ForbiddenException("Not Allow!");
-
-            await _paymentService.ApprovePaymant(id);
+            await _paymentService.ApprovePaymant(id, IdentityHelper.GetSub(User));
 
             return true;
         }
@@ -60,14 +53,8 @@ namespace SplitWise.API.Controllers
         [Authorize]
         public async Task<DataDeleteResponse> Delete(int id)
         {
-            var payment = await _paymentService.GetByKeysAsync(id);
-            if (payment == null)
-                throw new EntityNotFoundException("Payment Not Found!", id);
 
-            if (payment.ToUserId != IdentityHelper.GetSub(User))
-                throw new ForbiddenException("Not Allow!");
-
-            await _paymentService.DeleteAsync(payment);
+            await _paymentService.DeleteAsync(id, IdentityHelper.GetSub(User));
 
             return new DataDeleteResponse() { ok = true };
         }

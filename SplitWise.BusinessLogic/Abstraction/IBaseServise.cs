@@ -11,6 +11,7 @@ namespace SplitWise.BusinessLogic.Abstraction
         public Task<IEnumerable<T>> GetAsync();
         public Task<T> GetByKeysAsync(params object[] keyValues);
         public Task<bool> DeleteAsync(T item);
+        public Task<bool> DeleteAsync(params object[] keyValues);
         public Task<T> SaveAsync(T item);
         public Task<T> UpdateAsync(T item, params object[] keyValues);
     }
