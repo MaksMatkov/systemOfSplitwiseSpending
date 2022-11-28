@@ -53,13 +53,9 @@ namespace SplitWise.API.Controllers
         [Authorize]
         public async Task<DataDeleteResponse> Delete(int id)
         {
-
             await _paymentService.DeleteAsync(id, IdentityHelper.GetSub(User));
 
             return new DataDeleteResponse() { ok = true };
         }
-
-
-
     }
 }

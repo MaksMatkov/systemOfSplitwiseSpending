@@ -15,7 +15,7 @@ namespace SplitWise.BusinessLogic.Services
     {
         public GroupService(splitwiseContext _db) : base(_db) { }
 
-        public async Task<bool> AddFirstUserToGroup(int userID, int groupID)
+        public async Task<User> AddFirstUserToGroup(int userID, int groupID)
         {
             var group = await GetByKeysAsync(groupID);
             if (group == null)
@@ -29,16 +29,41 @@ namespace SplitWise.BusinessLogic.Services
             (group.UserGroups as List<UserGroup>).Add(item);
             await _db.SaveChangesAsync();
 
-            return true;
+            return user;
         }
 
-        public async Task<bool> AddNewUserToGroup(int inviterUserId, int userID, int groupID)
+        public async Task<User> AddNewUserToGroup(int inviterUserId, int userID, int groupID)
         {
             if(!await IsMemberOfGroup(inviterUserId, groupID))
-                throw new ForbiddenException("Not Allow!");
+                throw new ForbiddenException("Only group members can add users to this group!");
 
             return await AddFirstUserToGroup(userID, groupID);
         }
+
+        //TODO: replace to stored procedure.
+        #region toProcedure
+        public async Task<List<User>> GetGroupMembersAsync(int groupID, int reciverUserId)
+        {
+            if (!await IsMemberOfGroup(reciverUserId, groupID))
+                throw new ForbiddenException("Not allow!");
+            var group = await GetByKeysAsync(groupID);
+
+            var users = _db.UserGroups.Where(el => el.GroupId == groupID)
+                .Include(el => el.User)
+                .Select(el => el.User).ToListAsync();
+
+            return await users;
+        }
+
+        public async Task<List<Group>> GetAllByUserAsync(int userId)
+        {
+            return await _db.UserGroups.Where(el => el.UserId == userId)
+                .Include(el => el.Group)
+                .Select(el => el.Group).ToListAsync();
+        }
+
+
+        #endregion
 
         public async Task<bool> IsMemberOfGroup(int userID, int groupID)
         {

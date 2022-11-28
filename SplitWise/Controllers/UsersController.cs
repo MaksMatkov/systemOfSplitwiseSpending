@@ -59,9 +59,9 @@ namespace SplitWise.API.Controllers
         [HttpPut()]
         public async Task<UserResponse> Put(UserRequest _user)
         {
-            var rsult = await _userService.UpdateAsync(_mapper.Map<UserRequest, User>(_user), new object[] { _user.id });
+            var result = await _userService.UpdateAsync(_mapper.Map<UserRequest, User>(_user), new object[] { _user.id });
 
-            return _mapper.Map<User, UserResponse>(rsult);
+            return _mapper.Map<User, UserResponse>(result);
         }
 
         [HttpGet("validateName/{name}")]

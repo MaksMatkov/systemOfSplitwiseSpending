@@ -26,10 +26,11 @@ namespace SplitWise.API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<List<GroupResponse>> GetAll()
+        [HttpGet("usersGroup/{userId}")]
+        [Authorize]
+        public async Task<List<GroupResponse>> GetAllbyUser(int userId)
         {
-            var groups = await _groupService.GetAsync();
+            var groups = await _groupService.GetAllByUserAsync(userId);
 
             return _mapper.Map<List<Group>, List<GroupResponse>>(groups.ToList());
         }
@@ -39,6 +40,7 @@ namespace SplitWise.API.Controllers
         public async Task<GroupResponse> Post(GroupRequest _group)
         {
             var newGroup = await _groupService.SaveAsync(_mapper.Map<GroupRequest, Group>(_group));
+            
             //add creator to group
             await _groupService.AddFirstUserToGroup(IdentityHelper.GetSub(User), newGroup.Id);
 
@@ -47,13 +49,16 @@ namespace SplitWise.API.Controllers
 
         [HttpPost("{groupId}/users/{userId}")]
         [Authorize]
-        public async Task<bool> AddUserToGroup(int groupId, int userId)
+        public async Task<UserResponse> AddUserToGroup(int groupId, int userId)
         {
-            var group = await _groupService.GetByKeysAsync(groupId);
+            return _mapper.Map<User, UserResponse>(await _groupService.AddNewUserToGroup(IdentityHelper.GetSub(User), userId, groupId));
+        }
 
-            await _groupService.AddNewUserToGroup(IdentityHelper.GetSub(User), userId, group.Id);
-
-            return true;
+        [HttpGet("{groupId}/users")]
+        [Authorize]
+        public async Task<List<UserResponse>> GetUsers(int groupId)
+        {
+            return _mapper.Map<List<User>, List<UserResponse>>(await _groupService.GetGroupMembersAsync(groupId, IdentityHelper.GetSub(User)));
         }
 
         [HttpDelete("{id}")]
