@@ -45,6 +45,22 @@ namespace SplitWise.API.Controllers
             return _mapper.Map<Group, GroupResponse>(newGroup);
         }
 
+        [HttpPost("{groupId}/users/{userId}")]
+        [Authorize]
+        public async Task<bool> AddUserToGroup(int groupId, int userId)
+        {
+            var group = await _groupService.GetByKeysAsync(groupId);
+            if(group == null)
+                throw new EntityNotFoundException("The Group cannot be found.", groupId);
+
+            if(!(await _groupService.IsMemberOfGroup(userId, groupId)))
+                throw new ForbiddenException("You are not member of this group!");
+
+            await _groupService.AddUserToGroup(IdentityHelper.GetSub(User), group.Id);
+
+            return true;
+        }
+
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<DataDeleteResponse> Delete(int id)

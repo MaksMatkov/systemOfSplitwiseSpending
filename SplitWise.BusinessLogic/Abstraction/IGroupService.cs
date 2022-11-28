@@ -10,5 +10,7 @@ namespace SplitWise.BusinessLogic.Abstraction
     public interface IGroupService : IBaseServise<Group>
     {
         public Task<bool> AddUserToGroup(int userID, int groupID);
+
+        public Task<bool> IsMemberOfGroup(int userID, int groupID);
     }
 }

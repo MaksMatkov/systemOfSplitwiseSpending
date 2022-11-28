@@ -1,4 +1,5 @@
-﻿using SplitWise.BusinessLogic.Abstraction;
+﻿using Microsoft.EntityFrameworkCore;
+using SplitWise.BusinessLogic.Abstraction;
 using SplitWise.BusinessLogic.CustomExceptions;
 using SplitWise.Domain.Enteties;
 using SplitWise.Infrastucture;
@@ -29,6 +30,12 @@ namespace SplitWise.BusinessLogic.Services
             await _db.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<bool> IsMemberOfGroup(int userID, int groupID)
+        {
+            var value = await _db.UserGroups.Where(el => el.UserId == userID && el.GroupId == groupID).FirstOrDefaultAsync();
+            return value != null && value.UserId == userID;
         }
     }
 }
