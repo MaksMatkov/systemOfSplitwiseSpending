@@ -22,6 +22,7 @@ namespace SplitWise.API.Infrastructure
                 .ForMember("Id", el => el.MapFrom(v => v.id)).ReverseMap();
 
             CreateMap<Group, GroupResponse>()
+                .ForMember("name", el => el.MapFrom(v => v.Name))
                 .ForMember("id", el => el.MapFrom(v => v.Id)).ReverseMap();
 
             CreateMap<GroupRequest, Group>()
@@ -40,6 +41,16 @@ namespace SplitWise.API.Infrastructure
                .ForMember("time", el => el.MapFrom(v => v.Time))
                .ForMember("confirmed", el => el.MapFrom(v => v.Confirmed))
                .ForMember("id", el => el.MapFrom(v => v.Id)).ReverseMap();
+
+            CreateMap<ExpenseHeaderRequest, ExpenseHeader>()
+               .ForMember("Id", el => el.MapFrom(v => v.id))
+               .ForMember("Description", el => el.MapFrom(v => v.description))
+               .ForMember("Date", el => el.MapFrom(v => v.date))
+               .ForMember("GroupId", el => el.MapFrom(v => v.groupId)).ReverseMap();
+
+            CreateMap<ExpenseListRequest, ExpenseList>()
+               .ForMember("ExpenseHeaderId", el => el.MapFrom(v => v.expenseHeaderId))
+               .ForMember("Amount", el => el.MapFrom(v => v.amount)).ReverseMap();
 
 
         }

@@ -18,6 +18,6 @@ namespace SplitWise.Domain.Enteties
 
         public User User { get; set; }
         public Group Group { get; set; }
-        public IEnumerable<ExpenseList> ExpenseList { get; set; }
+        public IEnumerable<ExpenseList> ExpenseList { get; set; } = new List<ExpenseList>();
     }
 }

@@ -32,7 +32,7 @@ namespace SplitWise.BusinessLogic.Services
 
         public virtual async Task<bool> DeleteAsync(params object[] keyValues)
         {
-            var entity = GetByKeysAsync(keyValues);
+            var entity = await GetByKeysAsync(keyValues);
             return await DeleteAsync(entity);
         }
 

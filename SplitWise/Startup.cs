@@ -117,6 +117,8 @@ namespace SplitWise.API
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IExpensesService, ExpensesService>();
 
         }
 

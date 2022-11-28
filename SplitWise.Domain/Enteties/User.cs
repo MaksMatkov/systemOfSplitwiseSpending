@@ -14,11 +14,11 @@ namespace SplitWise.Domain.Enteties
         public string Name { get; set; }
         public string Password { get; set; }
 
-        public IEnumerable<UserGroup> UserGroups { get; set; }
-        public IEnumerable<ExpenseHeader> ExpenseHeaders { get; set; }
-        public IEnumerable<ExpenseList> ExpenseLists { get; set; }
-        public IEnumerable<Payment> PaymantFrom { get; set; }
-        public IEnumerable<Payment> PaymantTo { get; set; }
+        public IEnumerable<UserGroup> UserGroups { get; set; } = new List<UserGroup>();
+        public IEnumerable<ExpenseHeader> ExpenseHeaders { get; set; } = new List<ExpenseHeader>();
+        public IEnumerable<ExpenseList> ExpenseLists { get; set; } = new List<ExpenseList>();
+        public IEnumerable<Payment> PaymantFrom { get; set; } = new List<Payment>();
+        public IEnumerable<Payment> PaymantTo { get; set; } = new List<Payment>();
 
     }
 }

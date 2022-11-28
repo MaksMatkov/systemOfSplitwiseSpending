@@ -8,5 +8,6 @@ namespace SplitWise.API.Models
     public class GroupResponse
     {
         public int id { get; set; }
+        public string name { get; set; }
     }
 }

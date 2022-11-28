@@ -6,6 +6,7 @@ using SplitWise.API.Models;
 using SplitWise.BusinessLogic.Abstraction;
 using SplitWise.BusinessLogic.CustomExceptions;
 using SplitWise.Domain.Enteties;
+using SplitWise.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,21 +19,40 @@ namespace SplitWise.API.Controllers
     public class GroupsController : ControllerBase
     {
         private readonly IGroupService _groupService;
+        private readonly IExpensesService _expenseService;
         private readonly IMapper _mapper;
 
-        public GroupsController(IGroupService groupService, IMapper mapper)
+        public GroupsController(IGroupService groupService, IMapper mapper, IExpensesService expenseService)
         {
             _groupService = groupService;
             _mapper = mapper;
+            _expenseService = expenseService;
         }
 
-        [HttpGet("usersGroup/{userId}")]
+        [HttpGet("usersGroup")]
         [Authorize]
-        public async Task<List<GroupResponse>> GetAllbyUser(int userId)
+        public async Task<List<GroupResponse>> GetAllbyUser()
         {
-            var groups = await _groupService.GetAllByUserAsync(userId);
+            var groups = await _groupService.GetAllByUserAsync(IdentityHelper.GetSub(User));
 
             return _mapper.Map<List<Group>, List<GroupResponse>>(groups.ToList());
+        }
+
+        [HttpGet("{groupId}")]
+        [Authorize]
+        public async Task<GroupResponse> Get(int groupId)
+        {
+            var groups = await _groupService.GetSecureAsync(groupId, IdentityHelper.GetSub(User));
+
+            return _mapper.Map<Group, GroupResponse>(groups);
+        }
+
+        [HttpGet("{groupId}/Statistic")]
+        [Authorize]
+        public async Task<CalculatedData> GetStatistic(int groupId)
+        {
+            var userId = IdentityHelper.GetSub(User);
+            return await _expenseService.GetCalculatedDataAsync(userId, groupId);
         }
 
         [HttpPost]

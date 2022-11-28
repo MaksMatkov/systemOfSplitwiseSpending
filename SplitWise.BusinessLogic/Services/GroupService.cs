@@ -70,5 +70,13 @@ namespace SplitWise.BusinessLogic.Services
             var value = await _db.UserGroups.Where(el => el.UserId == userID && el.GroupId == groupID).FirstOrDefaultAsync();
             return value != null && value.UserId == userID;
         }
+
+        public async Task<Group> GetSecureAsync(int groupId, int userId)
+        {
+            if (!await IsMemberOfGroup(userId, groupId))
+                throw new ForbiddenException("Only group members can add users to this group!");
+
+            return await GetByKeysAsync(groupId);
+        }
     }
 }

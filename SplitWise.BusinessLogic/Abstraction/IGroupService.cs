@@ -14,5 +14,6 @@ namespace SplitWise.BusinessLogic.Abstraction
         public Task<bool> IsMemberOfGroup(int userID, int groupID);
         public Task<List<User>> GetGroupMembersAsync(int groupID, int reciverUserId);
         public Task<List<Group>> GetAllByUserAsync(int userId);
+        public Task<Group> GetSecureAsync(int groupId, int userId);
     }
 }
